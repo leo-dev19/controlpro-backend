@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+spring:
+  application:
+    name: controlpro-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5433/controlpro_db
+    username: controlpro_user
+    password: controlpro_password123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate # Database structure is validated against the SQL init script
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  jackson:
+    time-zone: UTC
+    date-format: yyyy-MM-dd'T'HH:mm:ss'Z'
+
+# App security configuration details
+app:
+  jwt:
+    secret: 9a67a3a9fcd34ad396a6dfa9c40212ab02c1f0345091b40974cfc4c4e8574483 # In prod, read from environment variable
+    accessTokenExpirationMs: 900000 # 15 minutes
+    refreshTokenExpirationMs: 604800000 # 7 days

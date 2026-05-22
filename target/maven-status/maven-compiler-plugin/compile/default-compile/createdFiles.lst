@@ -1,0 +1,8 @@
+com\controlpro\auth\model\User.class
+com\controlpro\common\model\AuditableEntity.class
+com\controlpro\employee\model\Employee.class
+com\controlpro\auth\model\Role.class
+com\controlpro\common\tenant\TenantContext.class
+com\controlpro\ControlProApplication.class
+com\controlpro\attendance\model\Attendance.class
+com\controlpro\tenant\model\Tenant.class
