@@ -2,6 +2,8 @@ package com.controlpro.employee.model;
 
 import com.controlpro.auth.model.User;
 import com.controlpro.common.model.AuditableEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +13,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "employees")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 public class Employee extends AuditableEntity {
@@ -25,6 +28,7 @@ public class Employee extends AuditableEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", unique = true)
+    @JsonIgnore
     private User user;
 
     @Column(name = "first_name", nullable = false, length = 50)

@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface IncidentRepository extends JpaRepository<Incident, Long> {
     List<Incident> findByEmployeeId(Long employeeId);
     Optional<Incident> findByAttendanceId(Long attendanceId);
+    long countByStatus(String status);
 }

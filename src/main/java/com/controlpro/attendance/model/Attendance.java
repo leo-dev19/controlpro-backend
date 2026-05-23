@@ -2,6 +2,7 @@ package com.controlpro.attendance.model;
 
 import com.controlpro.common.model.AuditableEntity;
 import com.controlpro.employee.model.Employee;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "attendances")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 public class Attendance extends AuditableEntity {

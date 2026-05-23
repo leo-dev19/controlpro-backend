@@ -2,6 +2,7 @@ package com.controlpro.schedule.model;
 
 import com.controlpro.common.model.AuditableEntity;
 import com.controlpro.employee.model.Employee;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "employee_schedules")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 public class EmployeeSchedule extends AuditableEntity {

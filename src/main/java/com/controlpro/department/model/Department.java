@@ -1,6 +1,7 @@
 package com.controlpro.department.model;
 
 import com.controlpro.common.model.AuditableEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Table(name = "departments", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"tenant_id", "name"})
 })
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 public class Department extends AuditableEntity {

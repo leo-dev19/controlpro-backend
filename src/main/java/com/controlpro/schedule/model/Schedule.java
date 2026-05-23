@@ -1,6 +1,7 @@
 package com.controlpro.schedule.model;
 
 import com.controlpro.common.model.AuditableEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "schedules")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 public class Schedule extends AuditableEntity {
