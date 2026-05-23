@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
@@ -17,5 +19,17 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByEmailNative(@Param("email") String email);
 
     boolean existsByEmail(String email);
+
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO users (id, tenant_id, email, password, role, status, created_at, updated_at) " +
+                   "VALUES (:id, :tenantId, :email, :password, :role, :status, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", 
+           nativeQuery = true)
+    void insertUserNative(@Param("id") UUID id,
+                          @Param("tenantId") UUID tenantId,
+                          @Param("email") String email,
+                          @Param("password") String password,
+                          @Param("role") String role,
+                          @Param("status") String status);
 }
 

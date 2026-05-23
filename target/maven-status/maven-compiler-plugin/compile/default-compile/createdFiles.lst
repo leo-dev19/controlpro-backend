@@ -34,6 +34,7 @@ com\controlpro\common\exception\GlobalExceptionHandler.class
 com\controlpro\auth\model\User.class
 com\controlpro\common\model\AuditableEntity.class
 com\controlpro\attendance\dto\PunchResponse.class
+com\controlpro\auth\dto\RegisterTenantRequest.class
 com\controlpro\employee\controller\EmployeeController$EmployeeCreateRequest.class
 com\controlpro\employee\model\Employee.class
 com\controlpro\auth\security\WebSecurityConfig.class

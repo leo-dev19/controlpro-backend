@@ -1,6 +1,7 @@
 D:\freecode\sistena-saas-controlPRO\backend\src\main\java\com\controlpro\incident\dto\JustifyRequest.java
 D:\freecode\sistena-saas-controlPRO\backend\src\main\java\com\controlpro\auth\dto\LoginRequest.java
 D:\freecode\sistena-saas-controlPRO\backend\src\main\java\com\controlpro\employee\repository\EmployeeRepository.java
+D:\freecode\sistena-saas-controlPRO\backend\src\main\java\com\controlpro\auth\dto\RegisterTenantRequest.java
 D:\freecode\sistena-saas-controlPRO\backend\src\main\java\com\controlpro\schedule\model\EmployeeSchedule.java
 D:\freecode\sistena-saas-controlPRO\backend\src\main\java\com\controlpro\incident\repository\IncidentRepository.java
 D:\freecode\sistena-saas-controlPRO\backend\src\main\java\com\controlpro\auth\security\AuthTokenFilter.java
