@@ -96,6 +96,22 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
+    @GetMapping("/my-schedule")
+    public ResponseEntity<?> getMySchedule() {
+        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Ficha de empleado no encontrada para el usuario: " + email));
+
+        Optional<EmployeeSchedule> activeScheduleOpt = employeeScheduleRepository
+                .findActiveScheduleByEmployeeAndDate(employee.getId(), LocalDate.now());
+
+        if (activeScheduleOpt.isPresent()) {
+            return ResponseEntity.ok(activeScheduleOpt.get().getSchedule());
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
     @Data
     public static class AssignmentRequest {
         private Long employeeId;

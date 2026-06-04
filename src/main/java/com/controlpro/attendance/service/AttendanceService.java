@@ -82,29 +82,30 @@ public class AttendanceService {
             attendance.setLongitudeIn(longitude);
 
             // Calcular tardanza
-            String status = "PUNCTUAL";
-            int minutesLate = 0;
-
             Optional<EmployeeSchedule> activeScheduleOpt = employeeScheduleRepository
                     .findActiveScheduleByEmployeeAndDate(employee.getId(), today);
 
-            if (activeScheduleOpt.isPresent()) {
-                Schedule schedule = activeScheduleOpt.get().getSchedule();
-                int dayOfWeek = today.getDayOfWeek().getValue(); // 1 = Lunes, 7 = Domingo
-                String dayStr = String.valueOf(dayOfWeek);
-                boolean isScheduledToday = Arrays.asList(schedule.getDaysOfWeek().split(","))
-                        .contains(dayStr);
+            if (activeScheduleOpt.isEmpty()) {
+                throw new IllegalArgumentException("No tienes un horario activo asignado para el día de hoy. Por favor contacta a tu administrador.");
+            }
 
-                if (isScheduledToday) {
-                    LocalTime scheduledStartTime = schedule.getStartTime();
-                    LocalDateTime scheduledCheckInDateTime = LocalDateTime.of(today, scheduledStartTime);
+            String status = "PUNCTUAL";
+            int minutesLate = 0;
+            Schedule schedule = activeScheduleOpt.get().getSchedule();
+            int dayOfWeek = today.getDayOfWeek().getValue(); // 1 = Lunes, 7 = Domingo
+            String dayStr = String.valueOf(dayOfWeek);
+            boolean isScheduledToday = Arrays.asList(schedule.getDaysOfWeek().split(","))
+                    .contains(dayStr);
 
-                    if (now.isAfter(scheduledCheckInDateTime)) {
-                        long diffMinutes = Duration.between(scheduledCheckInDateTime, now).toMinutes();
-                        if (diffMinutes > schedule.getToleranceMinutes()) {
-                            status = "LATE";
-                            minutesLate = (int) diffMinutes;
-                        }
+            if (isScheduledToday) {
+                LocalTime scheduledStartTime = schedule.getStartTime();
+                LocalDateTime scheduledCheckInDateTime = LocalDateTime.of(today, scheduledStartTime);
+
+                if (now.isAfter(scheduledCheckInDateTime)) {
+                    long diffMinutes = Duration.between(scheduledCheckInDateTime, now).toMinutes();
+                    if (diffMinutes > schedule.getToleranceMinutes()) {
+                        status = "LATE";
+                        minutesLate = (int) diffMinutes;
                     }
                 }
             }
