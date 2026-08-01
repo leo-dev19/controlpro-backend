@@ -96,6 +96,12 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
+    @GetMapping("/assignments")
+    @PreAuthorize("hasAnyRole('ADMIN_EMPRESA', 'RRHH')")
+    public List<EmployeeSchedule> getAllAssignments() {
+        return employeeScheduleRepository.findAll();
+    }
+
     @GetMapping("/my-schedule")
     public ResponseEntity<?> getMySchedule() {
         String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();

@@ -91,6 +91,80 @@ public class EmployeeController {
         }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Empleado no encontrado")));
     }
 
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN_EMPRESA', 'RRHH')")
+    @Transactional
+    public ResponseEntity<?> updateEmployeeStatus(@PathVariable Long id, @RequestBody Map<String, String> statusUpdate) {
+        String newStatus = statusUpdate.get("status");
+        if (newStatus == null || (!newStatus.equals("ACTIVE") && !newStatus.equals("INACTIVE"))) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Estado inválido. Debe ser ACTIVE o INACTIVE."));
+        }
+
+        return employeeRepository.findById(id).map(employee -> {
+            employee.setStatus(newStatus);
+            employeeRepository.save(employee);
+
+            // Actualizar también el estado del usuario asociado si existe
+            if (employee.getUser() != null) {
+                User user = employee.getUser();
+                user.setStatus(newStatus);
+                userRepository.save(user);
+            }
+
+            return ResponseEntity.ok().body(Map.of(
+                    "message", "Estado del empleado actualizado correctamente",
+                    "status", newStatus
+            ));
+        }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Empleado no encontrado")));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN_EMPRESA', 'RRHH')")
+    @Transactional
+    public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody EmployeeCreateRequest request) {
+        return employeeRepository.findById(id).map(employee -> {
+            // Validar si el nuevo documento ya existe en otro empleado
+            if (!employee.getDocumentNumber().equals(request.getDocumentNumber()) || !employee.getDocumentType().equals(request.getDocumentType())) {
+                if (employeeRepository.existsByDocumentTypeAndDocumentNumber(request.getDocumentType(), request.getDocumentNumber())) {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Ya existe otro empleado con ese tipo y número de documento"));
+                }
+            }
+
+            // Validar si el correo ya existe en otro usuario
+            if (!employee.getEmail().equalsIgnoreCase(request.getEmail())) {
+                if (userRepository.existsByEmail(request.getEmail())) {
+                    return ResponseEntity.badRequest().body(Map.of("message", "El correo electrónico ya está registrado por otro usuario"));
+                }
+            }
+
+            // Actualizar datos del usuario asociado si existe
+            if (employee.getUser() != null) {
+                User user = employee.getUser();
+                user.setEmail(request.getEmail().trim());
+                if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
+                    user.setPassword(passwordEncoder.encode(request.getPassword().trim()));
+                }
+                userRepository.save(user);
+            }
+
+            // Actualizar ficha de empleado
+            employee.setFirstName(request.getFirstName().trim());
+            employee.setLastName(request.getLastName().trim());
+            employee.setDocumentType(request.getDocumentType());
+            employee.setDocumentNumber(request.getDocumentNumber().trim());
+            employee.setEmail(request.getEmail().trim());
+            employee.setPhone(request.getPhone() != null ? request.getPhone().trim() : null);
+            employee.setDepartmentId(request.getDepartmentId());
+            employee.setPosition(request.getPosition() != null ? request.getPosition().trim() : null);
+            employee.setHireDate(LocalDate.parse(request.getHireDate(), DateTimeFormatter.ISO_LOCAL_DATE));
+
+            Employee saved = employeeRepository.save(employee);
+            return ResponseEntity.ok(saved);
+        }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Empleado no encontrado")));
+    }
+
+
+
     @Data
     public static class EmployeeCreateRequest {
         private String firstName;

@@ -48,6 +48,10 @@ public class AttendanceService {
         Employee employee = employeeRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Ficha de empleado no encontrada para el usuario: " + email));
 
+        if (!"ACTIVE".equals(employee.getStatus())) {
+            throw new IllegalArgumentException("Su cuenta de colaborador está inactiva. No puede registrar marcaciones.");
+        }
+
         LocalDate today = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
 
